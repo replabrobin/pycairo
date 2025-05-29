@@ -1,0 +1,54 @@
+# YAML see https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions
+name: linux-wheels
+
+on:
+  push:
+    branches:
+      - main
+
+concurrency:
+  group: ${{ github.repository }}
+  cancel-in-progress: true
+
+jobs:
+  build-wheels-linux:
+    needs: [clear-cache]
+    name: Build wheels on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    env:
+      CIBW_TEST_SKIP: "*"
+      CIBW_TEST_COMMAND: ""
+      CIBW_BUILD_VERBOSITY: 3
+      CIBW_PRERELEASE_PYTHONS: True
+      RL_CACHE_DIR: "/tmp/${{github.event.repository.name}}"
+    strategy:
+      fail-fast: true
+      matrix:
+        os: [ubuntu-latest, ubuntu-24.04-arm]
+        #os: [ubuntu-latest, ubuntu-24.04-arm, macos-13, macos-14]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up QEMU
+        if: runner.os == 'Linux'
+        uses: docker/setup-qemu-action@v3
+        with:
+          platforms: all
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+
+      - name: Build wheels
+        uses: pypa/cibuildwheel@v2.23.2
+        env:
+          SETUP_VERBOSE: 3
+          CIBW_SKIP: cp33* cp34* cp35* cp36* cp37* cp38* 
+          CIBW_ARCHS_LINUX: ${{ matrix.os == 'ubuntu-latest' && 'auto64 ppc64le s390x' || 'armv7l aarch64' }}
+          CIBW_BEFORE_ALL: "./.github/workflows/add-cairo"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: "${{ github.event.repository.name }}-${{ matrix.os }}-${{ strategy.job-index }}"
+          path: ./wheelhouse/*.whl

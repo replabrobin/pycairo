@@ -1,0 +1,23 @@
+#!/bin/sh
+if [ -n "`which yum`" ]; then
+	cmd="yum -y install cairo-devel"
+elif [ -n "`which apt-get`" ]; then
+	apt-get update
+	[ -n "`apt-cache search ^cairo-dev`" ] && cmd="cairo-dev" || cmd="libcairo2-dev"
+	cmd="apt-get -y install $cmd"
+elif [ -n "`which apk`" ]; then
+	apk update
+	cmd="apk add cairo-dev"
+elif [ -n "`which dnf`" ]; then
+	cmd="dnf -y install cairo-devel"
+fi
+
+echo "##### executing $cmd" 1>&2
+if [ -n "$cmd" ]; then
+	if $cmd; then
+		echo "##### cairo added" 1>&2
+		exit 0
+	fi
+fi
+echo "!!!!!!!!!! failed to add cairo !!!!!!!!!!" 1>&2
+exit -1
