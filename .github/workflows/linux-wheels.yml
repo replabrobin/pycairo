@@ -45,7 +45,7 @@ jobs:
           CIBW_SKIP: cp2* pypi* cp33* cp34* cp35* cp36* cp37* cp38* 
           CIBW_ARCHS_LINUX: ${{ matrix.os == 'ubuntu-latest' && 'auto64 ppc64le s390x' || 'armv7l aarch64' }}
           CIBW_BEFORE_ALL: "./.github/workflows/add-cairo"
-          CIBW_ENABLE: cypython-prerelease
+          CIBW_ENABLE: cpython-prerelease
 
       - uses: actions/upload-artifact@v4
         with:
