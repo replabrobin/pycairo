@@ -18,7 +18,6 @@ jobs:
       CIBW_TEST_SKIP: "*"
       CIBW_TEST_COMMAND: ""
       CIBW_BUILD_VERBOSITY: 3
-      CIBW_PRERELEASE_PYTHONS: True
       RL_CACHE_DIR: "/tmp/${{github.event.repository.name}}"
     strategy:
       fail-fast: true
@@ -43,9 +42,10 @@ jobs:
         uses: pypa/cibuildwheel@v2.23.2
         env:
           SETUP_VERBOSE: 3
-          CIBW_SKIP: cp33* cp34* cp35* cp36* cp37* cp38* 
+          CIBW_SKIP: cp2* pypi* cp33* cp34* cp35* cp36* cp37* cp38* 
           CIBW_ARCHS_LINUX: ${{ matrix.os == 'ubuntu-latest' && 'auto64 ppc64le s390x' || 'armv7l aarch64' }}
           CIBW_BEFORE_ALL: "./.github/workflows/add-cairo"
+          CIBW_ENABLE: cypython-prerelease
 
       - uses: actions/upload-artifact@v4
         with:
