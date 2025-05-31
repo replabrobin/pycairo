@@ -18,6 +18,8 @@ jobs:
       CIBW_TEST_SKIP: "*"
       CIBW_TEST_COMMAND: ""
       CIBW_BUILD_VERBOSITY: 3
+      CIBW_PRERELEASE_PYTHONS: True
+      CIBW_ENABLE: "cpython-prerelease"
       RL_CACHE_DIR: "/tmp/${{github.event.repository.name}}"
     strategy:
       fail-fast: true
