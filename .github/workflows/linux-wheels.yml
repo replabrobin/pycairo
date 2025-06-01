@@ -45,7 +45,7 @@ jobs:
           SETUP_VERBOSE: 3
           #CIBW_BUILD: cp314* cp313* cp312* cp311* cp310* cp39*
           CIBW_PROJECT_REQUIRES_PYTHON: ">=3.9"
-          CIBW_SKIP: pp* cp33* cp34* cp35* cp36* cp37* cp38* 
+          CIBW_SKIP: pp* cp36* cp37* cp38* 
           CIBW_ARCHS_LINUX: ${{ matrix.os == 'ubuntu-latest' && 'auto64 ppc64le s390x' || 'armv7l aarch64' }}
           CIBW_BEFORE_ALL: "./.github/workflows/add-cairo"
           CIBW_ENABLE: "cpython-prerelease"
